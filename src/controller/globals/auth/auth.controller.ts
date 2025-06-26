@@ -1,3 +1,7 @@
+
+
+
+
 /*
 
 REGISTER/SIGNUP
@@ -16,6 +20,7 @@ import {Request,Response} from "express"
 import User from "../../../database/models/user.model"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
+import generateJWTToken from "../../../services/generateJwtToken"
 // json data --> req.body // username,email,password 
 // files --> req.file // files
 // const registerUser = async (req:Request,res:Response)=>{
@@ -62,6 +67,7 @@ email login (SSO)
 
 class AuthController{
    static async registerUser(req:Request,res:Response){
+   
     if(req.body == undefined){
         console.log("triggereed")
         res.status(400).json({
@@ -139,9 +145,7 @@ class AuthController{
          const isPasswordMatch = bcrypt.compareSync(password,data[0].password)
          if(isPasswordMatch){
             // login vayo , token generation 
-           const token =  jwt.sign({id :data[0].id,name:"manish"},'thisissecret',{
-            expiresIn : "30d"
-           })
+         const token = generateJWTToken({id:data[0].id})
             res.status(200).json({
                 token : token, 
                 message : "Logged in success"
